@@ -1,0 +1,25 @@
+{
+  "id": "rtmpose.pose",
+  "version": "0.1.0",
+  "name": "RTMPose (pose estimation)",
+  "description": "RTMPose is a fast pose estimator. It runs on the CPU through onnxruntime, which makes it the practical choice on a machine without a GPU.",
+  "tasks": ["pose"],
+  "part_vocabulary": [],
+  "license": {
+    "spdx": "Apache-2.0",
+    "url": "https://github.com/open-mmlab/mmpose",
+    "requires_acceptance": false
+  },
+  "weights": {
+    "source": "https://github.com/open-mmlab/mmpose",
+    "gated": false,
+    "terms_url": "https://github.com/open-mmlab/mmpose",
+    "note": "The code is Apache-2.0. The ONNX model you point this adapter at has its own terms; use a model you are allowed to use."
+  },
+  "requires": {
+    "python": ">=3.11",
+    "packages": ["onnxruntime", "numpy", "Pillow"]
+  },
+  "entry_point": "rigger2d_adapter_rtmpose:adapter",
+  "priority": 10
+}

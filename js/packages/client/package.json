@@ -1,0 +1,21 @@
+{
+  "name": "@rigger2d/client",
+  "version": "0.1.0",
+  "description": "Typed client for the 2DAutoRigger service. Works in Node and in the browser.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@rigger2d/schema": "*"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.0"
+  }
+}

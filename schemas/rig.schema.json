@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2dautorigger.dev/schemas/rig.schema.json",
+  "title": "Rig document",
+  "description": "The canonical rig produced by the pipeline. rig.json is this document serialised.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "template_id",
+    "width",
+    "height",
+    "skinning",
+    "bones",
+    "layers"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "project_id": { "type": "string" },
+    "template_id": { "type": "string" },
+    "template_type": { "type": "string" },
+    "width": { "type": "integer", "minimum": 1 },
+    "height": { "type": "integer", "minimum": 1 },
+    "skinning": { "type": "string", "enum": ["cutout", "hybrid", "mesh"] },
+    "created_at": { "type": "string" },
+    "landmarks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["x", "y"],
+        "properties": { "x": { "type": "number" }, "y": { "type": "number" } }
+      }
+    },
+    "bones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "head", "tail"],
+        "properties": {
+          "id": { "type": "string" },
+          "parent": { "type": ["string", "null"] },
+          "head": { "$ref": "#/$defs/vec2" },
+          "tail": { "$ref": "#/$defs/vec2" },
+          "length": { "type": "number", "minimum": 0 },
+          "part_id": { "type": ["string", "null"] },
+          "layer": { "type": ["string", "null"] },
+          "rest_rotation": { "type": "number" }
+        }
+      }
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "part_id", "image", "z"],
+        "properties": {
+          "id": { "type": "string" },
+          "part_id": { "type": "string" },
+          "image": { "type": "string" },
+          "z": { "type": "integer" },
+          "pivot": { "$ref": "#/$defs/vec2" },
+          "bounds": { "$ref": "#/$defs/bbox" },
+          "skin": { "type": "string", "enum": ["rigid", "weighted"] }
+        }
+      }
+    },
+    "meshes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["part_id", "vertices", "uvs", "triangles"],
+        "properties": {
+          "part_id": { "type": "string" },
+          "vertices": { "type": "array", "items": { "$ref": "#/$defs/vec2" } },
+          "uvs": { "type": "array", "items": { "$ref": "#/$defs/vec2" } },
+          "triangles": { "type": "array", "items": { "type": "integer", "minimum": 0 } },
+          "bones": { "type": "array", "items": { "type": "array", "items": { "type": "integer" } } },
+          "weights": { "type": "array", "items": { "type": "array", "items": { "type": "number" } } }
+        }
+      }
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["adapter_id", "task"],
+        "properties": {
+          "adapter_id": { "type": "string" },
+          "adapter_version": { "type": "string" },
+          "task": { "type": "string" },
+          "ok": { "type": "boolean" },
+          "duration_ms": { "type": "integer", "minimum": 0 },
+          "license_spdx": { "type": ["string", "null"] },
+          "license_url": { "type": ["string", "null"] },
+          "detail": { "type": ["string", "null"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "vec2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": { "x": { "type": "number" }, "y": { "type": "number" } }
+    },
+    "bbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x0", "y0", "x1", "y1"],
+      "properties": {
+        "x0": { "type": "number" },
+        "y0": { "type": "number" },
+        "x1": { "type": "number" },
+        "y1": { "type": "number" }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+uv>=0.13
+numpy>=1.26
+Pillow>=10.0
+pydantic>=2.5
+fastapi>=0.110
+uvicorn>=0.27
+python-multipart>=0.0.9
+
+# Optional, install with: uv pip install -e ".[mesh]"
+# scipy provides Delaunay triangulation for deformable (weighted) meshes.
+# Without it the mesh stage falls back to ear-clipping the contour polygon,
+# which still produces a valid rig but deforms less smoothly.
+# scipy is BSD-3-Clause and is compatible with the Apache-2.0 core.
+# scipy>=1.11

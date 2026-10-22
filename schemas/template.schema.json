@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2dautorigger.dev/schemas/template.schema.json",
+  "title": "Rig template",
+  "description": "A rig template describes how a class of character is cut up, boned and layered. Templates are data: adding an animal or a custom character type is a new JSON file, not new code.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "type", "landmarks", "parts", "bones"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "type": { "type": "string", "minLength": 1, "description": "humanoid, quadruped, ..." },
+    "version": { "type": "integer", "minimum": 1 },
+    "description": { "type": "string" },
+    "landmarks": {
+      "type": "object",
+      "description": "Landmark id -> normalised position inside the character bounding box. x is 0..1 left to right, y is 0..1 top to bottom.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["x", "y"],
+        "properties": {
+          "x": { "type": "number", "minimum": 0, "maximum": 1 },
+          "y": { "type": "number", "minimum": 0, "maximum": 1 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "optional": { "type": "boolean" }
+        }
+      }
+    },
+    "parts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "z", "skin"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "z": { "type": "integer", "description": "Draw order. Higher is in front." },
+          "skin": { "type": "string", "enum": ["rigid", "weighted"] },
+          "bone": { "type": ["string", "null"], "description": "Bone this part is attached to." },
+          "anchors": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Landmark ids that seed this part when there is no segmentation backend."
+          },
+          "radius": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Max radius as a fraction of the character bounding box height."
+          },
+          "widen": { "type": "number", "minimum": 0, "description": "Extra growth of the mask, in pixels." }
+        }
+      }
+    },
+    "bones": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "parent": { "type": ["string", "null"] },
+          "head": { "type": "string", "description": "Landmark id used as the bone origin." },
+          "tail": { "type": "string", "description": "Landmark id used as the bone direction." },
+          "length": {
+            "type": "string",
+            "enum": ["from_mask", "landmark"],
+            "description": "from_mask: length follows the size of the bound part. landmark: length is the distance between head and tail landmarks."
+          },
+          "part": { "type": ["string", "null"], "description": "Part whose mask drives the length." },
+          "direction": {
+            "type": "string",
+            "enum": ["head_to_tail", "tail_to_head"],
+            "description": "Which way the bone points when the length comes from the mask."
+          }
+        }
+      }
+    },
+    "proportions": {
+      "type": "object",
+      "description": "Expected part sizes as a fraction of the character bounding box. Used to score segmentation results.",
+      "additionalProperties": { "type": "number", "minimum": 0 }
+    }
+  }
+}

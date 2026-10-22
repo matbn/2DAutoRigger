@@ -1,0 +1,14 @@
+# Normalise line endings in the repository, so a Windows checkout and a Linux
+# checkout hold the same bytes and the diff stays readable.
+* text=auto eol=lf
+
+# Binary: git must not touch these.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+
+# The lock file is generated and worth diffing normally.
+package-lock.json text eol=lf -diff

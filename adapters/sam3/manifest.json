@@ -1,0 +1,25 @@
+{
+  "id": "sam3.promptable",
+  "version": "0.1.0",
+  "name": "SAM 3 (promptable segmentation)",
+  "description": "SAM 3 is Meta's promptable segmentation model: you ask it for a concept such as 'left arm' and it tells you where that is in the picture.",
+  "tasks": ["parts"],
+  "part_vocabulary": ["foot_l", "foot_r", "hand_l", "hand_r", "head", "lower_arm_l", "lower_arm_r", "lower_leg_l", "lower_leg_r", "pelvis", "torso", "upper_arm_l", "upper_arm_r", "upper_leg_l", "upper_leg_r"],
+  "license": {
+    "spdx": "LicenseRef-Meta-SAM",
+    "url": "https://github.com/facebookresearch/sam3",
+    "requires_acceptance": true
+  },
+  "weights": {
+    "source": "https://huggingface.co/facebook/sam3",
+    "gated": true,
+    "terms_url": "https://huggingface.co/facebook/sam3/blob/main/LICENSE",
+    "note": "The weights are gated. Request access on Hugging Face and accept the Meta SAM License before downloading. This adapter never downloads them for you."
+  },
+  "requires": {
+    "python": ">=3.12",
+    "packages": ["torch>=2.7", "safetensors", "sam3"]
+  },
+  "entry_point": "rigger2d_adapter_sam3:adapter",
+  "priority": 10
+}

@@ -1,0 +1,24 @@
+[project]
+name = "rigger2d-adapter-lama"
+version = "0.1.0"
+description = "LaMa (inpainting, fills what a limb hides) backend for 2DAutoRigger."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "2DAutoRigger contributors" }]
+
+dependencies = [
+  "onnxruntime",
+  "numpy",
+  "Pillow",
+]
+
+[project.entry-points."rigger2d.adapters"]
+"lama.inpaint" = "rigger2d_adapter_lama:adapter"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["rigger2d_adapter_lama"]

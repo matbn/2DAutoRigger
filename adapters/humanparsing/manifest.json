@@ -1,0 +1,25 @@
+{
+  "id": "humanparsing.lip",
+  "version": "0.1.0",
+  "name": "Human parsing (LIP / ATR labels)",
+  "description": "Human parsing models label every pixel of a person with a body part class. They are the strongest option for humanoids and the weakest option for anything else, which is exactly the split the pipeline expects.",
+  "tasks": ["parts"],
+  "part_vocabulary": [],
+  "license": {
+    "spdx": "MIT",
+    "url": "https://github.com/GoGoBunny/HRNet-Semantic-Segmentation",
+    "requires_acceptance": false
+  },
+  "weights": {
+    "source": "https://github.com/GoGoBunny/HRNet-Semantic-Segmentation",
+    "gated": false,
+    "terms_url": "https://github.com/GoGoBunny/HRNet-Semantic-Segmentation",
+    "note": "Parsing models are trained on human photographs and datasets such as LIP and ATR. Check the dataset licenses before commercial use."
+  },
+  "requires": {
+    "python": ">=3.11",
+    "packages": ["onnxruntime", "numpy", "Pillow"]
+  },
+  "entry_point": "rigger2d_adapter_humanparsing:adapter",
+  "priority": 20
+}

@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  python:
+    name: Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install the dependencies
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python -r requirements.txt
+          uv pip install --python .venv/bin/python -e ".[dev,mesh]"
+
+      - name: Run the tests
+        run: .venv/bin/python -m pytest tests -q
+
+      - name: The licence gate
+        run: .venv/bin/python tools/license_check.py
+
+      - name: The schema gate
+        run: .venv/bin/python tools/schema_check.py
+
+      - name: Every adapter loads
+        run: |
+          .venv/bin/python - <<'PY'
+          import os, sys
+          from pathlib import Path
+          sys.path.insert(0, "python")
+          from rigger2d.adapters.base import AdapterContext
+          from rigger2d.adapters.registry import Registry, probe_entry
+
+          adapters = Path("adapters")
+          os.environ["RIGGER2D_PLUGINS"] = os.pathsep.join(
+              str(p) for p in sorted(adapters.iterdir()) if p.is_dir()
+          )
+          registry = Registry.discover()
+          ctx = AdapterContext(project_dir=Path.cwd(), work_dir=Path.cwd())
+          seen = set()
+          for entry in registry.usable():
+              if entry.id == "core.fallback":
+                  continue
+              probe = probe_entry(entry, ctx)
+              # Their dependencies are not installed here, so the only honest
+              # answer is "install them".
+              assert probe.reason, entry.id
+              seen.add(entry.id)
+          assert len(seen) == 5, f"expected five adapters, got {sorted(seen)}"
+          print("ok:", sorted(seen))
+          PY
+
+      - name: Rig a character end to end
+        run: |
+          .venv/bin/python -m rigger2d.cli run tests/fixtures.py --project /tmp/ci.rig || true
+          .venv/bin/python -c "
+          import sys
+          sys.path.insert(0, 'tests')
+          from pathlib import Path
+          from fixtures import draw_character
+          from rigger2d.pipeline.session import Session
+          from rigger2d.pipeline.stages import RunOptions, run_stages
+          image = draw_character(Path('/tmp/ci-hero.png'))
+          session = Session(Path('/tmp/ci.rig'))
+          document = session.create(image)
+          document = run_stages(session, document, RunOptions(targets=['native', 'godot', 'spine']))
+          rig = document.rig
+          assert rig is not None
+          assert len(rig.bones) > 15
+          assert (session.exports_dir / 'godot' / 'scene.tscn').is_file()
+          assert (session.exports_dir / 'spine' / 'skeleton.json').is_file()
+          print('ok')
+          "
+
+  javascript:
+    name: JavaScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install the dependencies
+        working-directory: js
+        run: npm ci
+
+      - name: Type check
+        working-directory: js
+        run: npm run typecheck
+
+      - name: Run the tests
+        working-directory: js
+        run: npm run test
+
+      - name: Build the editor
+        working-directory: js
+        run: npm run build

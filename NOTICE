@@ -1,0 +1,45 @@
+2DAutoRigger
+Copyright 2026 The 2DAutoRigger contributors
+
+This product includes software developed by the 2DAutoRigger contributors.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+
+--------------------------------------------------------------------------------
+THIRD-PARTY MATERIAL
+--------------------------------------------------------------------------------
+
+The core in this repository is Apache-2.0 and depends only on Apache-2.0,
+BSD-3-Clause, MIT and other permissive licenses. `tools/license_check.py`
+enforces this in CI and fails the build on a copyleft dependency.
+
+No model weights, no third-party model code and no game-engine runtime code are
+distributed in this repository. Specifically:
+
+  * Segmentation / pose / inpainting backends are NOT part of this repository.
+    They are separate, independently licensed plugin packages. The core ships
+    only the adapter contract (`rigger2d.adapters.base`) and a reference
+    implementation (`examples/mock_adapter`) that performs no inference.
+    The user is responsible for selecting, installing and complying with the
+    license of each backend.
+
+  * Spine is a trademark of Esoteric Software LLC. This project emits data in
+    the documented Spine JSON format. It contains no Spine source code and
+    grants no rights in Spine. A valid Spine license is required to use the
+    Spine editor and runtimes.
+
+  * Godot is a trademark of Godot Engine contributors. This project emits
+    Godot scene files. It contains no Godot Engine source code and grants no
+    rights in the Godot Engine.
+
+Exports produced by this project carry a `provenance.json` file recording which
+adapter produced which part, together with the license that adapter declared.

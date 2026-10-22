@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# Node
+node_modules/
+js/**/dist/
+js/**/.vite/
+js/**/coverage/
+npm-debug.log*
+
+# Test / tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+playwright-report/
+test-results/
+
+# Generated editor bundle (built by `npm run build`, served by the Python service)
+python/rigger2d/server/static/
+
+# Model weights and datasets -- must never be committed
+*.safetensors
+*.onnx
+*.pth
+*.pt
+*.ckpt
+weights/
+datasets/
+*.bin
+
+# Unity / engine files are written at export time and must never be committed.
+# The emitters produce them; the repository contains none of them.
+*.prefab
+*.unity
+*.asset
+*.meta
+Assets/
+Library/
+ProjectSettings/
+UserSettings/
+*.slnx
+
+# Local project output
+*.rig/
+out/
+projects/

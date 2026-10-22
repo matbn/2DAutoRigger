@@ -1,0 +1,25 @@
+{
+  "id": "birefnet.matte",
+  "version": "0.1.0",
+  "name": "BiRefNet (high resolution matte)",
+  "description": "BiRefNet is a high resolution dichotomous image segmentation model. It is excellent at cutting a character out of its background, which is the first thing the pipeline has to get right.",
+  "tasks": ["matte"],
+  "part_vocabulary": [],
+  "license": {
+    "spdx": "MIT",
+    "url": "https://github.com/ZhengPeng7/BiRefNet",
+    "requires_acceptance": false
+  },
+  "weights": {
+    "source": "https://huggingface.co/ZhengPeng7/BiRefNet",
+    "gated": false,
+    "terms_url": "https://huggingface.co/ZhengPeng7/BiRefNet",
+    "note": "The code is MIT. The weights are published by their authors under their own terms; read the model card before using them."
+  },
+  "requires": {
+    "python": ">=3.11",
+    "packages": ["torch>=2.2", "transformers", "timm", "safetensors"]
+  },
+  "entry_point": "rigger2d_adapter_birefnet:adapter",
+  "priority": 10
+}

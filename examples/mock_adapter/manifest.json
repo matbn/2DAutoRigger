@@ -1,0 +1,19 @@
+{
+  "id": "example.mock",
+  "version": "0.1.0",
+  "name": "Mock backend",
+  "description": "A reference implementation of the adapter contract. It performs no inference and needs no weights; it exists so that the plugin contract can be exercised.",
+  "tasks": ["matte", "pose", "parts"],
+  "part_vocabulary": [],
+  "license": {
+    "spdx": "Apache-2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "requires_acceptance": false
+  },
+  "requires": {
+    "python": ">=3.11",
+    "packages": []
+  },
+  "entry_point": "plugin:adapter",
+  "priority": 50
+}

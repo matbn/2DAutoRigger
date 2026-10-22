@@ -1,0 +1,25 @@
+{
+  "id": "lama.inpaint",
+  "version": "0.1.0",
+  "name": "LaMa (inpainting, fills what a limb hides)",
+  "description": "LaMa is an inpainting model. The pipeline uses it to fill in the area a limb hides, so that rotating an arm does not reveal a hole in the torso.",
+  "tasks": ["inpaint"],
+  "part_vocabulary": [],
+  "license": {
+    "spdx": "Apache-2.0",
+    "url": "https://github.com/advimman/lama",
+    "requires_acceptance": false
+  },
+  "weights": {
+    "source": "https://github.com/advimman/lama",
+    "gated": false,
+    "terms_url": "https://github.com/advimman/lama",
+    "note": "Apache-2.0. The model weights are published by the LaMa authors; check the repository for their terms."
+  },
+  "requires": {
+    "python": ">=3.11",
+    "packages": ["onnxruntime", "numpy", "Pillow"]
+  },
+  "entry_point": "rigger2d_adapter_lama:adapter",
+  "priority": 20
+}

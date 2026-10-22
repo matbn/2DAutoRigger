@@ -1,0 +1,21 @@
+{
+  "name": "@rigger2d/core",
+  "version": "0.1.0",
+  "description": "Rig maths and a canvas preview renderer for 2DAutoRigger.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@rigger2d/schema": "*"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.0"
+  }
+}
