@@ -8,28 +8,44 @@ It runs entirely on your machine. No account, no cloud, no telemetry. The core i
 
 ```bash
 uv venv .venv
-uv pip install --python .venv/bin/python -r requirements.txt
-uv pip install --python .venv/bin/python -e ".[dev]"
+.venv\Scripts\activate          # Windows: .venv\Scripts\activate.bat
+                                # macOS/Linux: source .venv/bin/activate
 
-# Rig a character (stops at the refine gate for human correction)
-.venv/bin/python -m rigger2d.cli run hero.png --project hero.rig --until refine
+uv pip install -r requirements.txt
+uv pip install -e ".[dev]"      # only if you want to run tests or lint
+```
 
-# Then slice and export
-.venv/bin/python -m rigger2d.cli run hero.png --project hero.rig --targets native,godot,spine
+The `autorigger2d` command is now available:
+
+```bash
+autorigger2d run hero.png --project hero.rig --until refine
+```
+
+Stop at the refine gate to correct the masks and joints before slicing:
+
+```bash
+autorigger2d run hero.png --project hero.rig --until refine
+```
+
+Then slice and export:
+
+```bash
+autorigger2d run hero.png --project hero.rig --targets native,godot,spine
 ```
 
 Or run everything in one shot:
 
 ```bash
-.venv/bin/python -m rigger2d.cli run hero.png --project hero.rig
+autorigger2d run hero.png --project hero.rig
 ```
 
 ### Browser editor
 
 ```bash
 cd js && npm install && npm run build
-.venv/bin/python -m rigger2d.cli serve
+python -m rigger2d.cli serve
 ```
+
 Then open `http://127.0.0.1:8765`.
 
 ## Deformation modes
@@ -43,7 +59,7 @@ Then open `http://127.0.0.1:8765`.
 The mode is per-part in the template and chosen at export time:
 
 ```bash
-.venv/bin/python -m rigger2d.cli run hero.png --project hero.rig --skinning hybrid --targets native,godot,spine
+autorigger2d run hero.png --project hero.rig --skinning hybrid --targets native,godot,spine
 ```
 
 ## Backends (plugin system)
@@ -91,10 +107,10 @@ Edits are stored as a stroke/joint log, not re-rasterised masks, so they're comp
 ## Checks
 
 ```bash
-.venv/bin/python -m pytest tests -q            # Python tests
-cd js && npm run test                          # JavaScript tests
-.venv/bin/python tools/license_check.py        # Apache-2.0 core check
-.venv/bin/python tools/schema_check.py         # contract check
+pytest tests -q            # Python tests
+cd js && npm run test      # JavaScript tests
+python tools/license_check.py   # Apache-2.0 core check
+python tools/schema_check.py         # contract check
 ```
 
 ## Licence
