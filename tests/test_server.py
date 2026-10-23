@@ -146,6 +146,20 @@ def test_an_image_can_be_sent_as_base64(client: TestClient, character_image: Pat
     assert response.json()["document"]["image"]["width"] == 512
 
 
+def test_the_browser_field_names_are_accepted(client: TestClient, character_image: Path) -> None:
+    """The browser client sends camelCase; it must not 400 over the field name.
+
+    Everything else the client sends is snake_case, but this one field was
+    camelCase on the JavaScript side, so the field was silently dropped and the
+    request failed with "give an image_path or image_base64".
+    """
+
+    encoded = base64.b64encode(character_image.read_bytes()).decode("ascii")
+    response = client.post("/api/projects", json={"imageBase64": encoded})
+    assert response.status_code == 200, response.text
+    assert response.json()["document"]["image"]["width"] == 512
+
+
 def test_a_project_without_an_image_is_rejected(client: TestClient) -> None:
     assert client.post("/api/projects", json={}).status_code == 400
 

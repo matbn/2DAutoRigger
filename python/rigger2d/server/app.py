@@ -18,7 +18,7 @@ from typing import Any, Literal
 from fastapi import Body, FastAPI, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 
 from ..adapters.base import AdapterContext
 from ..adapters.registry import Registry, probe_entry
@@ -40,8 +40,22 @@ def projects_root() -> Path:
 
 
 class CreateProject(BaseModel):
-    image_path: str | None = None
-    image_base64: str | None = None
+    """Create a project.
+
+    Both spellings of the image fields are accepted: the Python client and the
+    tests use snake_case, the browser client sends camelCase.
+    """
+
+    model_config = {"populate_by_name": True}
+
+    image_path: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("image_path", "imagePath"),
+    )
+    image_base64: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("image_base64", "imageBase64"),
+    )
     template: str = "humanoid.biped.v1"
     name: str | None = None
 

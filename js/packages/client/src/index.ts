@@ -75,13 +75,7 @@ export class RiggerClient {
       },
     });
     if (!response.ok) {
-      let detail: unknown = await response.text();
-      try {
-        detail = JSON.parse(detail as string);
-      } catch {
-        // keep the text
-      }
-      throw new RiggerError(response.status, detail);
+      throw new RiggerError(response.status, await readDetail(response));
     }
     if (response.status === 204) {
       return undefined as T;
@@ -201,4 +195,31 @@ export class RiggerClient {
 
 export function createClient(options: ClientOptions = {}): RiggerClient {
   return new RiggerClient(options);
+}
+
+/**
+ * The reason a request failed, as the service stated it.
+ *
+ * FastAPI wraps every error in a `{"detail": ...}` envelope, and validation
+ * errors come back as `{"detail": [{...}]}`. Both would otherwise surface as an
+ * unhelpful "request failed with 400", so unwrap them here.
+ */
+async function readDetail(response: Response): Promise<string> {
+  const text = await response.text();
+  try {
+    const parsed: unknown = JSON.parse(text);
+    if (Array.isArray(parsed)) {
+      const messages = parsed
+        .map((item) => (typeof item === "object" && item && "msg" in item ? String((item as { msg: unknown }).msg) : ""))
+        .filter(Boolean);
+      if (messages.length > 0) return messages.join("; ");
+    }
+    if (parsed && typeof parsed === "object" && "detail" in parsed) {
+      const detail = (parsed as { detail: unknown }).detail;
+      return typeof detail === "string" ? detail : JSON.stringify(detail);
+    }
+    return String(parsed);
+  } catch {
+    return text || `request failed with ${response.status}`;
+  }
 }

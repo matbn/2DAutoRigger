@@ -56,7 +56,25 @@ describe("the client", () => {
     const client = new RiggerClient({
       fetch: fakeFetch(() => json({ detail: "no project" }, 404)),
     });
-    await expect(client.getProject("nope")).rejects.toBeInstanceOf(RiggerError);
+    const error = await client.getProject("nope").catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(RiggerError);
+    // The service's reason must survive, not degrade to "request failed with 404".
+    expect((error as RiggerError).message).toBe("no project");
+    expect((error as RiggerError).status).toBe(404);
+  });
+
+  it("says what the service said even without a detail envelope", async () => {
+    const client = new RiggerClient({
+      fetch: fakeFetch(
+        () =>
+          new Response("no such image: hero.png", {
+            status: 400,
+            headers: { "content-type": "text/plain" },
+          }),
+      ),
+    });
+    const error = await client.createProject({ imageBase64: "x" }).catch((caught: unknown) => caught);
+    expect((error as RiggerError).message).toBe("no such image: hero.png");
   });
 
   it("builds the image urls", () => {
