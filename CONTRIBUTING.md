@@ -18,6 +18,28 @@ npm run test
 npm run build
 ```
 
+## Before you push: check it in a clean environment
+
+A working directory that has been developed in is a superset of what the
+project declares. Something installed by hand during a session will pass
+locally and fail in CI — that is exactly how `jsonschema`, used by
+`tools/schema_check.py`, once went undeclared and broke the build.
+
+The two commands below are the ones CI runs. If they pass in a fresh
+environment, CI will pass:
+
+```bash
+uv venv /tmp/clean
+uv pip install --python /tmp/clean/bin/python -r requirements.txt
+uv pip install --python /tmp/clean/bin/python -e ".[dev,mesh]"
+/tmp/clean/bin/python -m pytest tests -q
+/tmp/clean/bin/python tools/license_check.py
+/tmp/clean/bin/python tools/schema_check.py
+```
+
+If you add an import anywhere outside `adapters/`, add its distribution to
+`requirements.txt` (runtime) or to the `dev` extra (tests and tools).
+
 ## The rules that matter
 
 **The core stays free of machine learning.** No `torch`, no `transformers`, no

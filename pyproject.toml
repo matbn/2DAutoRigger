@@ -28,6 +28,9 @@ dev = [
   "pytest>=8.0",
   "httpx>=0.27",
   "ruff>=0.5",
+  # tools/schema_check.py and the tests that call it. Development only: the
+  # core does not validate schemas at runtime.
+  "jsonschema>=4.20",
 ]
 
 [project.scripts]

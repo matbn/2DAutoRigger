@@ -66,25 +66,32 @@ jobs:
 
       - name: Rig a character end to end
         run: |
-          .venv/bin/python -m rigger2d.cli run tests/fixtures.py --project /tmp/ci.rig || true
-          .venv/bin/python -c "
+          .venv/bin/python - <<'PY'
           import sys
-          sys.path.insert(0, 'tests')
           from pathlib import Path
+
+          sys.path.insert(0, "tests")
           from fixtures import draw_character
           from rigger2d.pipeline.session import Session
           from rigger2d.pipeline.stages import RunOptions, run_stages
-          image = draw_character(Path('/tmp/ci-hero.png'))
-          session = Session(Path('/tmp/ci.rig'))
+
+          work = Path("/tmp/ci")
+          image = draw_character(work / "hero.png")
+          session = Session(work / "hero.rig")
           document = session.create(image)
-          document = run_stages(session, document, RunOptions(targets=['native', 'godot', 'spine']))
+          document = run_stages(
+              session,
+              document,
+              RunOptions(targets=["native", "godot", "spine", "unity"]),
+          )
+
           rig = document.rig
           assert rig is not None
           assert len(rig.bones) > 15
-          assert (session.exports_dir / 'godot' / 'scene.tscn').is_file()
-          assert (session.exports_dir / 'spine' / 'skeleton.json').is_file()
-          print('ok')
-          "
+          for name in ("godot/scene.tscn", "spine/skeleton.json", "unity/Assets/Character.prefab"):
+              assert (session.exports_dir / name).is_file(), name
+          print(f"ok: {len(rig.bones)} bones, {len(rig.layers)} layers")
+          PY
 
   javascript:
     name: JavaScript
