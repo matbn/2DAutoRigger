@@ -122,7 +122,7 @@ def check_no_weights() -> list[str]:
     for path in ROOT.rglob("*"):
         if not path.is_file():
             continue
-        if ".git" in path.parts or "node_modules" in path.parts:
+        if any(part in {".git", ".venv", "node_modules"} for part in path.parts):
             continue
         if path.suffix.lower() in WEIGHT_SUFFIXES:
             fail(f"{path.relative_to(ROOT)}: a model weight file is committed", problems)

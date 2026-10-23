@@ -71,6 +71,6 @@ def test_the_core_has_no_weights() -> None:
     for path in ROOT.rglob("*"):
         if not path.is_file():
             continue
-        if "node_modules" in path.parts or ".git" in path.parts:
+        if any(part in {".git", ".venv", "node_modules"} for part in path.parts):
             continue
         assert path.suffix.lower() not in {".safetensors", ".onnx", ".pth", ".ckpt"}, path
