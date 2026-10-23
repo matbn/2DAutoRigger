@@ -28,7 +28,7 @@ jobs:
           uv pip install --python .venv/bin/python -e ".[dev,mesh]"
 
       - name: Run the tests
-        run: .venv/bin/python -m pytest tests -q
+        run: .venv/bin/python -m pytest tests -q --tb=long
 
       - name: The licence gate
         run: .venv/bin/python tools/license_check.py
